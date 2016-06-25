@@ -5,10 +5,10 @@
   * 拓扑更改,详情见“拓扑1.png”
   * wifi终端改为匀速远离AP，详情见“匀速移动模型.png”
   * 用户机设为4台
-  * trace设置为“true”,相关见文件夹”ns3-lec2-project2-1”
+  * trace设置为“true”,相关见文件夹”pcap1”
 
 * #### 文件”ns3-lec2-project2-2.cc"主要改动（相对于ns3-lec2-project2-1.cc)
   * 拓扑更改,详情见“拓扑2.png”
   * wifi终端改为加速远离AP，详情见“加速移动模型.png”
-  * trace设置相关见文件夹”ns3-lec2-project2-2”
+  * trace设置相关见文件夹”pcap2”
    
