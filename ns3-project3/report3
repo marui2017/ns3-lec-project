@@ -1,0 +1,68 @@
+# ns3第三次实验报告
+#### 马睿 2013010910018
+#### 1. 系统日志
+在代码中添加如下（使用最高等级日志）：
+```
+include   Time::SetResolution (Time::NS);
+LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_ALL);
+LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_ALL);
+```
+效果如图所示：
+![log-info-all-1](https://cloud.githubusercontent.com/assets/19885552/16370313/33e838b6-3c71-11e6-8e48-02e657f30467.png)
+![log-info-all-2](https://cloud.githubusercontent.com/assets/19885552/16370314/361fea7a-3c71-11e6-8e5d-1aa08ab57bbf.png)
+#### 2. tracing
+在代码中添加如下(分别侦听ptp和csma信道)：
+```
+AsciiTraceHelper ascii;
+pointToPoint.EnableAsciiAll (ascii.CreateFileStream("pointToPoint.tr"));
+pointToPoint.EnablePcapAll("pointToPoint");
+AsciiTraceHelper ascii2;
+csma.EnableAsciiAll (ascii2.CreateFileStream("csma.tr"));
+csma.EnablePcapAll("csma");
+```
+输出文件见本文件夹文件
+#### 3. PyViz
+在前面基础上的结果截图：
+![pyviz](https://cloud.githubusercontent.com/assets/19885552/16370329/463f3730-3c71-11e6-87a7-e61411d4953c.png)
+#### 4. Wireshark
+打开一条csma的.pacp文件如下：
+![wireshark](https://cloud.githubusercontent.com/assets/19885552/16370330/4846f5cc-3c71-11e6-80a2-bbd3025bea02.png)
+#### 5. Gnuplot
+通过更改移动台的移动速度（线性远离速度），侦测由客户端发出到服务器接收的最小时延和丢包数量（总共4个），得到表格如下：
+
+
+| 移动速度 | 服务器最小收到时延/ms | 丢包数（总共4个包） |
+| :---:|:----:| :---:|
+| 10   | 8.91    | 0  |
+| 20    | 8.91    |  0   |
+| 30    | 8.93    |  1  |
+| 40   | 8.93    | 2    |
+| 50    | 8.93    |  2   |
+| 60    | 9.08    |   3  |
+| 70   | 9.08    | 3 |
+| 80    | 9.08    |  3   |
+| 90    | 9.08    |   3 |
+| 100   | 9.08    | 3    |
+
+下图为移动速度和时延关系图，可见其关系不大；  
+![delay](https://cloud.githubusercontent.com/assets/19885552/16370335/528e57dc-3c71-11e6-98de-5fafc55edf99.png)
+下图为移动速度和丢包数，可见随着移动速度的增加，丢包数量也增加（很粗略）。
+![packet loss](https://cloud.githubusercontent.com/assets/19885552/16370336/5405acd2-3c71-11e6-8c98-87535ea63384.png)
+
+#### 6. 相关软件安装步骤
+ * PyViz
+1.  安装依赖包
+```
+sudo apt-get install python-dev python-pygraphviz python-kiwi python-pygoocanvas \
+                         python-gnome2 python-gnomedesktop python-rsvg
+```
+2. 安装交互python
+```
+  sudo apt-get install ipython
+```
+
+ * wireshark
+```
+        sudo apt-get install wireshark
+```
+（其实并不知道应该写点什么。。这就是我的安装方法。。。）
