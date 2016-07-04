@@ -1,0 +1,62 @@
+# ns3第四次实验报告
+#### 马睿 2013010910018
+1. 拓扑搭建
+两个搭建拓扑：两个wifi网络，各有6个sta1个ap,中间使用csma信道连接两个ap实现两个wifi网络的通信.具体如图:
+
+ ![project4-1](https://cloud.githubusercontent.com/assets/19885552/16558356/bacee806-4217-11e6-83ad-f9cf3f575bfe.png)
+2. 场景范围 500m x 500m
+这里使用随机游走模型的游走范围来确定,两个ap的位置为(20,20)和(70,20),故游走范围为(-205, 295, -230, 270).
+
+3. 传播模型为ConstantSpeedPropagationDelayModel
+是无线信道类型.具体代码为:
+```
+YansWifiChannelHelper channel1 = YansWifiChannelHelper::Default ();
+channel1.SetPropagationDelay("ns3::ConstantSpeedPropagationDelayModel");
+```
+4. Mac类型为：NqosWifiMacHelper（没有QoS保障的Mac层机制）
+具体代码为:
+```
+  NqosWifiMacHelper mac1 = NqosWifiMacHelper::Default ();
+```
+5.  移动模型为随机游走模型，设定初始位置为两个六边形，边长10m，sta在6个顶点上，ap在六边形中间；两个六边形中心相距50m
+ap位置上面已说明,sta位置如下(举(20,20)的ap为例):
+```
+MobilityHelper mobility1;
+mobility1.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+                           "Bounds", RectangleValue (Rectangle (-205, 295, -230, 270)));
+mobility1.Install (wifi1StaNodes);
+Ptr<RandomWalk2dMobilityModel> mob1 = wifi1StaNodes.Get(0)->GetObject<RandomWalk2dMobilityModel>();
+  mob1->SetPosition(Vector(15.0, 28.66, 0.0));
+Ptr<RandomWalk2dMobilityModel> mob2 = wifi1StaNodes.Get(1)->GetObject<RandomWalk2dMobilityModel>();
+  mob2->SetPosition(Vector(25.0, 28.66, 0.0));
+Ptr<RandomWalk2dMobilityModel> mob3 = wifi1StaNodes.Get(2)->GetObject<RandomWalk2dMobilityModel>();
+  mob3->SetPosition(Vector(30.0, 20.0, 0.0));
+Ptr<RandomWalk2dMobilityModel> mob4 = wifi1StaNodes.Get(3)->GetObject<RandomWalk2dMobilityModel>();
+  mob4->SetPosition(Vector(25.0, 11.34, 0.0));
+Ptr<RandomWalk2dMobilityModel> mob5 = wifi1StaNodes.Get(4)->GetObject<RandomWalk2dMobilityModel>();
+  mob5->SetPosition(Vector(15.0, 11.34, 0.0));
+Ptr<RandomWalk2dMobilityModel> mob6 = wifi1StaNodes.Get(5)->GetObject<RandomWalk2dMobilityModel>();
+  mob6->SetPosition(Vector(10.0, 20.0, 0.0));
+```
+6. packet size为512byte，包间隔为100ms
+安装server服务的回显客户端时可以设置.设置为发送10个包间隔0.1s大小512b.代码如下:
+```
+UdpEchoClientHelper echoClient (wifi1staipadd.GetAddress (nWifi1-1), 9);
+echoClient.SetAttribute ("MaxPackets", UintegerValue (10));
+echoClient.SetAttribute ("Interval", TimeValue (Seconds (0.1)));
+echoClient.SetAttribute ("PacketSize", UintegerValue (512));
+```
+7.  使用PyViz查看仿真并截图
+基础拓扑见条目1.仿真中信息传递时图如下:
+
+    ![project4-2](https://cloud.githubusercontent.com/assets/19885552/16558357/bad75554-4217-11e6-9716-1483d145a8e7.png)
+8.  自行设定自变量，使用Tracing系统记录数据，通过Matlab处理数据并画图
+tracing的pcap文件见文件夹下所有.pcap文件
+(然而并不知道使用什么参数画图,使用最简单的gnuplot画了10次传输中所用总时间的图)
+实验结果如下图:
+
+ ![project4-3](https://cloud.githubusercontent.com/assets/19885552/16558355/babc8238-4217-11e6-9af5-e1bff7e61947.png)
+相关数据画图如下:
+
+ ![project4-4](https://cloud.githubusercontent.com/assets/19885552/16558358/bb047520-4217-11e6-9914-e1c38591adf7.png)
+ 可见其来回时间基本保持稳定.
